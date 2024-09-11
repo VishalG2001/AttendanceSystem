@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "760510869938",
+    "project_id": "android-task-2f017",
+    "storage_bucket": "android-task-2f017.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:760510869938:android:e0926d759327bf773df4ab",
+        "android_client_info": {
+          "package_name": "com.example.recycleviewpractice"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCyai146HMy641zRRjtutsHY2R6oNTNipk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:map="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        map:layout_constraintStart_toStartOf="parent"
+        map:layout_constraintEnd_toEndOf="parent"
+        map:layout_constraintTop_toTopOf="parent"
+        android:layout_marginBottom="50dp"
+        map:layout_constraintBottom_toTopOf="@id/sbHighlightSize"
+        tools:context=".mapTracking.PuneMap" />
+
+    <androidx.appcompat.widget.AppCompatSeekBar
+        android:id="@+id/sbHighlightSize"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        map:layout_constraintStart_toStartOf="parent"
+        map:layout_constraintEnd_toEndOf="parent"
+        map:layout_constraintTop_toBottomOf="@id/map"
+        android:tickMark="@drawable/custom_seekbar"
+        android:max="4"
+        />
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnJump"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/jump"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:background="@drawable/bg_with_radius"
+        android:backgroundTint="@color/science_blue"
+        map:layout_constraintStart_toStartOf="parent"
+        map:layout_constraintEnd_toEndOf="parent"
+        map:layout_constraintBottom_toBottomOf="parent"
+        map:layout_constraintTop_toBottomOf="@id/sbHighlightSize"
+        android:layout_marginVertical="40dp"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

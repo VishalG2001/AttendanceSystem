@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingHorizontal="40dp"
+    android:gravity="center"
+    android:background="@color/regent_st_blue"
+    tools:context=".attendanceSystem.AttendanceHome">
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnRegister"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/register"
+        android:textAllCaps="false"
+        android:layout_marginVertical="15dp"
+        android:fontFamily="@font/outfit_semi_bold"
+        />
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnMarkAttendance"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAllCaps="false"
+        android:text="@string/mark_attendance_using_camera"
+        android:fontFamily="@font/outfit_semi_bold"
+        />
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnMarkAttendanceQR"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAllCaps="false"
+        android:layout_marginTop="5dp"
+        android:text="@string/mark_attendance_using_qr"
+        android:fontFamily="@font/outfit_semi_bold"
+        />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/for_teachers"
+        android:layout_gravity="start"
+        android:layout_marginTop="150dp"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/black"
+        />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnTeacherLogin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:textAllCaps="false"
+        android:text="@string/login"
+        android:fontFamily="@font/outfit_semi_bold"
+        />
+
+
+</LinearLayout>

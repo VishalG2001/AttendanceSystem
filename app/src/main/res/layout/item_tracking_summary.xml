@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:id="@+id/ItemTrackingCard"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:cardCornerRadius="12dp"
+    app:strokeWidth="1dp"
+    android:background="@color/white"
+    android:layout_marginHorizontal="20dp"
+    android:layout_marginTop="20dp"
+    app:strokeColor="@color/buddha_gold">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvTrackingDate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:fontFamily="@font/outfit_semi_bold"
+            android:singleLine="true"
+            app:layout_constraintEnd_toStartOf="@id/imgVehicleType"
+            android:textColor="@color/mine_shaft"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="06 June, 2024 06  ">
+
+        </androidx.appcompat.widget.AppCompatTextView>
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/imgVehicleType"
+            android:layout_width="20dp"
+            android:layout_height="11.3dp"
+            android:background="@drawable/ic_car"
+            android:layout_marginEnd="10dp"
+            app:layout_constraintBottom_toBottomOf="@id/tvTrackingDate"
+            app:layout_constraintEnd_toStartOf="@id/tvStatus"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toEndOf="@id/tvTrackingDate"
+            app:layout_constraintTop_toTopOf="@id/tvTrackingDate"
+            app:layout_constraintVertical_bias="0.666" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/bg_with_radius"
+            android:backgroundTint="@color/varden"
+            android:drawableStart="@drawable/ic_status"
+            android:drawablePadding="10dp"
+            android:fontFamily="@font/outfit_semi_bold"
+            android:paddingHorizontal="15dp"
+            android:paddingVertical="2dp"
+            android:textColor="@color/buddha_gold"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toStartOf="@id/icHalfArrow"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Ongoing" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/icHalfArrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:layout_marginEnd="20dp"
+            android:src="@drawable/ic_half_arrow"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tvStatus" />
+
+        <View
+            android:id="@+id/DividerH30"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginVertical="20dp"
+            android:background="@color/edward"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvTrackingDate" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/ivStartTracking"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="13dp"
+            android:background="@drawable/ic_status"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/DividerH30" />
+
+        <com.example.recycleviewpractice.trackingSummary.DottedLineView
+            android:id="@+id/vProgressBar"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginVertical="4dp"
+            app:layout_constraintBottom_toTopOf="@id/ivEndTracking"
+            app:layout_constraintEnd_toEndOf="@+id/ivStartTracking"
+            app:layout_constraintStart_toStartOf="@id/ivStartTracking"
+            app:layout_constraintTop_toBottomOf="@id/ivStartTracking" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/ivEndTracking"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginBottom="2dp"
+            android:background="@drawable/ic_status"
+            app:layout_constraintBottom_toBottomOf="@id/tvEndTrackingTitle"
+            app:layout_constraintEnd_toStartOf="@id/tvEndTrackingTitle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/vProgressBar" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvStartTrackingTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/outfit_medium"
+            android:singleLine="true"
+            android:textColor="@color/tundora"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/ivStartTracking"
+            app:layout_constraintTop_toBottomOf="@id/DividerH30"
+            tools:text="Lorem ipsum dolor sit ametlasdfflsajfadipiscin...." />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvStartTrackingTime"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginVertical="5dp"
+            android:singleLine="true"
+            android:textColor="@color/gray"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/ivStartTracking"
+            app:layout_constraintTop_toBottomOf="@id/tvStartTrackingTitle"
+            tools:text="10:00AM" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvEndTrackingTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/outfit_medium"
+            android:singleLine="true"
+            android:textColor="@color/tundora"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/ivEndTracking"
+            app:layout_constraintTop_toBottomOf="@id/tvStartTrackingTime"
+            tools:text="Lorem ipsum dolor sit ametlasdfflsajfadipiscin...." />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvEndTrackingTime"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="20dp"
+            android:singleLine="true"
+            android:textColor="@color/gray"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/ivEndTracking"
+            app:layout_constraintTop_toBottomOf="@id/tvEndTrackingTitle"
+            tools:text="10:00AM"
+
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</com.google.android.material.card.MaterialCardView>

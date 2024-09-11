@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="mine_shaft">#2F2F2F</color>
+    <color name="tundora">#454545</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="zircon">#F4F8FF</color>
+    <color name="alabaster">#FAFAFA</color>
+    <color name="ebb">#F1EEEE</color>
+    <color name="mercury">#E2E2E2</color>
+    <color name="buddha_gold">#D09700</color>
+    <color name="quarter_pearl_lusta">#FFFCF5</color>
+    <color name="varden">#FFF6DE</color>
+    <color name="gray">#808080</color>
+    <color name="edward">#A4B2AD</color>
+    <color name="regent_st_blue">#a4d0e9</color>
+    <color name="science_blue">#006CC2</color>
+    <color name="light_blue">#8000bfff</color>
+    <color name="hint_of_green">#DEFFEC</color>
+    <color name="eucalyptus">#219653</color>
+    <color name="chablis">#FFF0F0</color>
+    <color name="thunderbird">#B21C1C</color>
+
+</resources>

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.USE_BIOMETRIC" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+
+    <application
+        android:name=".MyApplication"
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.RecycleViewPractice"
+        tools:targetApi="31">
+        <activity
+            android:name=".attendanceSystem.qr_attendance.QrCodeGenerationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".attendanceSystem.qr_attendance.QrAttendanceActivity"
+            android:exported="false" />
+        <activity
+            android:name=".retrofit.RetrofitActivity"
+            android:exported="false"
+            android:theme="@style/Theme.RecycleViewPractice">
+
+        </activity>
+        <activity
+            android:name=".bluetoothConnection.BluetoothDevicesActivity"
+            android:exported="true" />
+        <activity
+            android:name=".attendanceSystem.MarkAttandenceActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".attendanceSystem.RegisterActivity"
+            android:exported="false" />
+        <activity
+            android:name=".attendanceSystem.AttendanceHome"
+            android:exported="true"
+            android:theme="@style/Theme.RecycleViewPractice" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyATG2X9e9HaHMM5Nv2ksv3BSUIzmGROnDw" />
+
+        <activity
+            android:name=".mapTracking.PuneMap"
+            android:exported="false"
+            android:label="@string/title_activity_pune_map" />
+        <activity
+            android:name=".mapTracking.MapTracking"
+            android:exported="false"
+            android:label="@string/title_activity_map_tracking" />
+        <activity
+            android:name=".trackingSummary.TrackingSummary"
+            android:exported="false" />
+        <activity
+            android:name=".MainActivity"
+            android:exported="false" />
+
+        <meta-data
+            android:name="com.google.firebase.ml.vision.DEPENDENCIES"
+            android:value="face" />
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.example.recycleviewpractice.attendanceSystem"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+    </application>
+
+</manifest>

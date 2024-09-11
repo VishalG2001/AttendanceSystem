@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:padding="8dp">
+
+        <TextView
+            android:id="@+id/textFirstName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            tools:text="First Name"
+            android:fontFamily="@font/outfit_regular"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/textLastName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            tools:text="Last Name"
+            android:fontFamily="@font/outfit_regular"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/textEmail"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="@font/outfit_regular"
+            tools:text="Email"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/textRollNo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/outfit_regular"
+            android:layout_weight="1"
+            tools:text="Roll No"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/textPhoneNo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/outfit_regular"
+            android:layout_weight="1"
+            tools:text="Phone No"
+            android:textSize="16sp" />
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/imageViewAttendance"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:layout_marginStart="8dp"
+            android:src="@drawable/un_mark" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/imageViewQR"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:layout_marginStart="8dp"
+            android:visibility="gone"
+            android:src="@drawable/ic_qr" />
+</LinearLayout>
