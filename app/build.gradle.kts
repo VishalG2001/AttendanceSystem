@@ -55,7 +55,6 @@ dependencies {
     implementation(libs.play.services.location)
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
-    implementation(libs.firebase.ml.vision)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -75,5 +74,7 @@ dependencies {
     implementation (libs.zxing.android.embedded)
     // QR code scanning
     implementation(libs.quickie.bundled)
+    // Face detection offline
+    implementation (libs.face.detection)
 
 }

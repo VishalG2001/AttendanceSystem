@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.provider.MediaStore
 import android.text.InputType
@@ -13,20 +14,16 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import com.amazonaws.auth.BasicAWSCredentials
-import com.amazonaws.metrics.AwsSdkMetrics.setRegion
-import com.amazonaws.regions.Regions
-import com.amazonaws.services.rekognition.AmazonRekognitionClient
-import com.amazonaws.services.rekognition.model.DetectFacesRequest
-import com.amazonaws.services.rekognition.model.Image
 import com.example.recycleviewpractice.R
 import com.example.recycleviewpractice.attendanceSystem.relmModels.Student
 import com.example.recycleviewpractice.databinding.ActivityRegisterBinding
+import com.google.mlkit.vision.common.InputImage
+import com.google.mlkit.vision.face.FaceDetection
+import com.google.mlkit.vision.face.FaceDetectorOptions
 import io.realm.Realm
 import io.realm.kotlin.createObject
 import java.io.File
 import java.io.FileOutputStream
-import java.nio.ByteBuffer
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -47,6 +44,7 @@ class RegisterActivity : AppCompatActivity() {
         binding.captureImageButton.setOnClickListener { checkCameraPermission() }
         binding.registerButton.setOnClickListener { saveToRealmAndNavigate() }
     }
+
     private val requestCameraPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
@@ -64,7 +62,7 @@ class RegisterActivity : AppCompatActivity() {
             val imageBitmap = result.data?.extras?.get("data") as Bitmap?
             imageBitmap?.let {
                 // Display the captured image in ImageView
-                imageBitmapUser=it
+                imageBitmapUser = it
 //                binding.studentImage.setImageBitmap(it)
                 // Save the image to a file
                 saveImageToFile(it)
@@ -74,36 +72,56 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun detectFacesInImage(sourceImage: String?) {
-//        val credentials = BasicAWSCredentials("AKIAXYCOTWVS3PJHOIEM", "+zREr/UWwkxUlEVNJqJI2LKSqUMQvZmeachrEBwf")
-        val rekognitionClient = AmazonRekognitionClient(credentials).apply {
-            setRegion(com.amazonaws.regions.Region.getRegion(Regions.US_EAST_1))
+        if (sourceImage == null) {
+            Toast.makeText(this, "Image source is null", Toast.LENGTH_SHORT).show()
+            return
         }
 
-        val imageBytes = File(sourceImage).readBytes()
-        val request = DetectFacesRequest().withImage(Image().withBytes(ByteBuffer.wrap(imageBytes)))
+        // Load the image file
+        val imageBitmap = BitmapFactory.decodeFile(sourceImage)
 
-        Thread {
-            try {
-                val result = rekognitionClient.detectFaces(request)
-                val faceDetails = result.faceDetails
-                if (faceDetails.isNullOrEmpty()) {
-                    runOnUiThread {
-                        Toast.makeText(this, "No face detected in the image", Toast.LENGTH_SHORT).show()
-                    }
+        // Convert the image to InputImage format for ML Kit
+        val inputImage = InputImage.fromBitmap(imageBitmap, 0)
+
+        // Configure high accuracy options for ML Kit face detection
+        val highAccuracyOpts = FaceDetectorOptions.Builder()
+            .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_ACCURATE)
+            .setLandmarkMode(FaceDetectorOptions.LANDMARK_MODE_ALL)
+            .setClassificationMode(FaceDetectorOptions.CLASSIFICATION_MODE_ALL)
+            .setMinFaceSize(0.15f)
+            .enableTracking()
+            .build()
+
+        // Get the FaceDetector instance
+        val detector = FaceDetection.getClient(highAccuracyOpts)
+
+        // Process the image and detect faces
+        detector.process(inputImage)
+            .addOnSuccessListener { faces ->
+                if (faces.isEmpty()) {
+                    // No faces detected
+                    Toast.makeText(this, "No face detected in the image", Toast.LENGTH_SHORT).show()
                 } else {
-                    runOnUiThread {
-                        binding.studentImage.setImageBitmap(imageBitmapUser)
+                    // At least one face detected
+                    // Display the image in ImageView
+                    binding.studentImage.setImageBitmap(imageBitmap)
+                    Toast.makeText(this, "Face Detected", Toast.LENGTH_SHORT).show()
+
+                    for (face in faces) {
+                        // Log or process each detected face
+                        val bounds = face.boundingBox
+                        val rotY = face.headEulerAngleY // Head is rotated to the right rotY degrees
+                        val rotZ = face.headEulerAngleZ // Head is tilted sideways rotZ degrees
+                        // You can extract other facial features like landmarks, eyes open/closed, smiling, etc.
                     }
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-                runOnUiThread {
-                    Toast.makeText(this, "Failed to detect faces: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
             }
-        }.start()
+            .addOnFailureListener { e ->
+                // Handle detection failure
+                Toast.makeText(this, "Failed to detect faces: ${e.message}", Toast.LENGTH_SHORT)
+                    .show()
+            }
     }
-
 
 
     private fun saveImageToFile(bitmap: Bitmap) {
@@ -116,6 +134,7 @@ class RegisterActivity : AppCompatActivity() {
             storageDir
         )
         currentPhotoPath = imageFile.absolutePath
+        val currentPhoto = imageFile
         // Save the bitmap to the file
         val fos = FileOutputStream(imageFile)
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos)
@@ -155,13 +174,18 @@ class RegisterActivity : AppCompatActivity() {
 //            }
         }, {
             // Transaction was successful, navigate to Attendance Home activity
-            Toast.makeText(this@RegisterActivity, "Successfully registered", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@RegisterActivity, "Successfully registered", Toast.LENGTH_SHORT)
+                .show()
             startActivity(Intent(this@RegisterActivity, AttendanceHome::class.java))
             finish() // Optional: finish current activity if not needed anymore
             realm.close()
         }, { error ->
             // Transaction failed, show error message
-            Toast.makeText(this@RegisterActivity, "Failed to save data: ${error.message}", Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                this@RegisterActivity,
+                "Failed to save data: ${error.message}",
+                Toast.LENGTH_SHORT
+            ).show()
             Log.e("register", "Failed to save data: ${error.message}")
             realm.close()
         })
@@ -196,9 +220,13 @@ class RegisterActivity : AppCompatActivity() {
 
     private fun checkCameraPermission() {
         when {
-            ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED -> {
+            ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.CAMERA
+            ) == PackageManager.PERMISSION_GRANTED -> {
                 launchCamera()
             }
+
             else -> {
                 requestCameraPermissionLauncher.launch(Manifest.permission.CAMERA)
             }

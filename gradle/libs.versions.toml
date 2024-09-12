@@ -7,6 +7,7 @@ biometric = "1.2.0-alpha05"
 bubbleseekbar = "3.20"
 converterGson = "2.9.0"
 core = "3.4.1"
+faceDetection = "16.1.7"
 firebaseMlVisionFaceModel = "20.0.2"
 firebaseMlVisionVersion = "24.0.3"
 gradle = "8.1.4"
@@ -47,6 +48,7 @@ barcode-scanning = { module = "com.google.mlkit:barcode-scanning", version.ref =
 bubbleseekbar = { module = "com.xw.repo:bubbleseekbar", version.ref = "bubbleseekbar" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
 core = { module = "com.google.zxing:core", version.ref = "core" }
+face-detection = { module = "com.google.mlkit:face-detection", version.ref = "faceDetection" }
 firebase-ml-vision-face-model = { module = "com.google.firebase:firebase-ml-vision-face-model", version.ref = "firebaseMlVisionFaceModel" }
 firebase-ml-vision-v2403 = { module = "com.google.firebase:firebase-ml-vision", version.ref = "firebaseMlVisionVersion" }
 gradle = { module = " com.android.tools.build:gradle", version.ref = "gradle" }

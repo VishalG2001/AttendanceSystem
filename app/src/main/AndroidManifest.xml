@@ -83,6 +83,7 @@
             android:name="com.google.firebase.ml.vision.DEPENDENCIES"
             android:value="face" />
 
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.example.recycleviewpractice.attendanceSystem"
