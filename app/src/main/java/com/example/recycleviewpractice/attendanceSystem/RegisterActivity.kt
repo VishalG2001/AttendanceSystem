@@ -74,7 +74,7 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun detectFacesInImage(sourceImage: String?) {
-        val credentials = BasicAWSCredentials("AKIAXYCOTWVS3PJHOIEM", "+zREr/UWwkxUlEVNJqJI2LKSqUMQvZmeachrEBwf")
+//        val credentials = BasicAWSCredentials("AKIAXYCOTWVS3PJHOIEM", "+zREr/UWwkxUlEVNJqJI2LKSqUMQvZmeachrEBwf")
         val rekognitionClient = AmazonRekognitionClient(credentials).apply {
             setRegion(com.amazonaws.regions.Region.getRegion(Regions.US_EAST_1))
         }
