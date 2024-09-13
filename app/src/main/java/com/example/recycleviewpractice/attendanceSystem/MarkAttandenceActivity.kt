@@ -137,7 +137,10 @@ private fun loadModel(): Interpreter {
                                     // Now you can use this bitmap for comparison
                                     if (compareFaces1(bitmap1, it)){
                                         showToastOnMainThread("Face matched")
-//                                        markAttendance(student)
+                                        withContext(Dispatchers.Main){
+                                            markAttendance(student)
+                                        }
+//
                                         attendanceCheck = true
                                     }else{
                                         showToastOnMainThread("Face not matched")
@@ -152,11 +155,11 @@ private fun loadModel(): Interpreter {
                                 showToastOnMainThread("Error comparing faces")
                             }
                         }
-                        if (attendanceCheck){
-                            markAttendance(student)
-                        }else{
-                            Log.d("Vishal", "false it is")
-                        }
+//                        if (attendanceCheck){
+//                            markAttendance(student)
+//                        }else{
+//                            Log.d("Vishal", "false it is")
+//                        }
                     }
                 }
             }
@@ -265,7 +268,7 @@ private fun loadModel(): Interpreter {
         // Calculate the distance between two embeddings (Euclidean distance)
         val distance = calculateEuclideanDistance(embedding1, embedding2)
         Log.d("Vishal", "compareFaces1: $distance")
-        return distance < 0.65 // Adjust threshold based on your needs
+        return distance < 0.6 // Adjust threshold based on your needs
     }
     private fun extractFaceEmbedding(bitmap: Bitmap): FloatArray {
         val inputBuffer = bitmapToByteBuffer(bitmap)
