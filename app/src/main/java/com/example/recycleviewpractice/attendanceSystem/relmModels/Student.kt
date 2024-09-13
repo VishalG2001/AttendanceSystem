@@ -1,5 +1,6 @@
 package com.example.recycleviewpractice.attendanceSystem.relmModels
 
+import android.graphics.Bitmap
 import io.realm.RealmObject
 import io.realm.annotations.PrimaryKey
 
@@ -13,4 +14,6 @@ open class Student : RealmObject() {
     var phoneNo: String = ""
     var userImg: String = ""
     var isPresent: Boolean = false
+//    var ImagebyteArray: ByteArray = byteArrayOf()
+//    var imageBitmap: Bitmap? = null
 }

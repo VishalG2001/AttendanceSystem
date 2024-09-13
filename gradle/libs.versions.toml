@@ -36,6 +36,7 @@ googleGmsGoogleServices = "4.4.2"
 firebaseMlVision = "24.1.0"
 rekognition = "2.17.89"
 retrofit = "2.11.0"
+tensorflowLite = "2.11.0"
 zxingAndroidEmbedded = "4.3.0"
 
 [libraries]
@@ -75,6 +76,7 @@ firebase-ml-vision = { group = "com.google.firebase", name = "firebase-ml-vision
 rekognition = { module = "software.amazon.awssdk:rekognition", version.ref = "rekognition" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 s3 = { module = "software.amazon.awssdk:s3", version.ref = "rekognition" }
+tensorflow-lite = { module = "org.tensorflow:tensorflow-lite", version.ref = "tensorflowLite" }
 zxing-android-embedded = { module = "com.journeyapps:zxing-android-embedded", version.ref = "zxingAndroidEmbedded" }
 
 [plugins]

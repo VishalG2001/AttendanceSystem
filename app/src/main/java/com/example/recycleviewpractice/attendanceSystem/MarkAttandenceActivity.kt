@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
@@ -15,12 +16,6 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.amazonaws.auth.BasicAWSCredentials
-import com.amazonaws.regions.Regions
-import com.amazonaws.services.rekognition.AmazonRekognitionClient
-import com.amazonaws.services.rekognition.model.CompareFacesRequest
-import com.amazonaws.services.rekognition.model.CompareFacesResult
-import com.amazonaws.services.rekognition.model.Image
 import com.example.recycleviewpractice.R
 import com.example.recycleviewpractice.attendanceSystem.adapters.StudentAdapter
 import com.example.recycleviewpractice.attendanceSystem.qr_attendance.QrAttendanceActivity
@@ -32,12 +27,17 @@ import io.realm.Realm
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.tensorflow.lite.Interpreter
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.FileInputStream
 import java.nio.ByteBuffer
+import java.nio.ByteOrder
+import java.nio.channels.FileChannel
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import kotlin.math.log
 
 class MarkAttandenceActivity : AppCompatActivity(), StudentClickListener {
 
@@ -47,6 +47,8 @@ class MarkAttandenceActivity : AppCompatActivity(), StudentClickListener {
     private lateinit var realm: Realm
     private lateinit var studentList: List<Student>
     private var selectedStudent: Student? = null
+    private lateinit var interpreter: Interpreter
+    private var attendanceCheck: Boolean = false
 
     private val scanQrCodeLauncher = registerForActivityResult(ScanQRCode()) { result ->
         // handle QRResult
@@ -58,15 +60,25 @@ class MarkAttandenceActivity : AppCompatActivity(), StudentClickListener {
             is QRResult.QRError -> Toast.makeText(this, "Error: ${result.exception.localizedMessage}", Toast.LENGTH_SHORT).show()
         }
     }
-    private val credentials = BasicAWSCredentials("AKIAXYCOTWVS3PJHOIEM", "+zREr/UWwkxUlEVNJqJI2LKSqUMQvZmeachrEBwf")
-    private val rekognitionClient = AmazonRekognitionClient(credentials).apply {
-        setRegion(com.amazonaws.regions.Region.getRegion(Regions.US_EAST_1))
-    }
-
+//    private val credentials = BasicAWSCredentials("AKIAXYCOTWVS3PJHOIEM", "+zREr/UWwkxUlEVNJqJI2LKSqUMQvZmeachrEBwf")
+//    private val rekognitionClient = AmazonRekognitionClient(credentials).apply {
+//        setRegion(com.amazonaws.regions.Region.getRegion(Regions.US_EAST_1))
+//    }
+private fun loadModel(): Interpreter {
+    val assetManager = assets
+    val modelDescriptor = assetManager.openFd("mobile_face_net.tflite")
+    val inputStream = FileInputStream(modelDescriptor.fileDescriptor)
+    val fileChannel = inputStream.channel
+    val startOffset = modelDescriptor.startOffset
+    val declaredLength = modelDescriptor.declaredLength
+    val model = fileChannel.map(FileChannel.MapMode.READ_ONLY, startOffset, declaredLength)
+    return Interpreter(model)
+}
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityMarkAttandenceBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+        interpreter = loadModel()
 
         // Initialize Realm
         realm = Realm.getDefaultInstance()
@@ -118,69 +130,90 @@ class MarkAttandenceActivity : AppCompatActivity(), StudentClickListener {
                     selectedStudent?.let { student ->
                         lifecycleScope.launch(Dispatchers.IO) {
                             try {
-                                compareFaces(student.userImg, it)
+                                val photoPath1 = student.userImg
+                                val bitmap1 = BitmapFactory.decodeFile(photoPath1)
+
+                                if (bitmap1 != null) {
+                                    // Now you can use this bitmap for comparison
+                                    if (compareFaces1(bitmap1, it)){
+                                        showToastOnMainThread("Face matched")
+//                                        markAttendance(student)
+                                        attendanceCheck = true
+                                    }else{
+                                        showToastOnMainThread("Face not matched")
+                                    }
+                                     // `secondBitmap` is the second image bitmap you captured
+                                } else {
+                                    showToastOnMainThread("Failed to convert image path to Bitmap")
+                                }
+
                             } catch (e: Exception) {
                                 Log.e("MarkAttendanceActivity", "Error comparing faces: ${e.message}")
                                 showToastOnMainThread("Error comparing faces")
                             }
+                        }
+                        if (attendanceCheck){
+                            markAttendance(student)
+                        }else{
+                            Log.d("Vishal", "false it is")
                         }
                     }
                 }
             }
         }
 
-    private fun compareFaces(sourceImageUrl: String, targetImage: Bitmap) {
-        lifecycleScope.launch(Dispatchers.IO) {
-            performCompareFaces(sourceImageUrl, targetImage)
-        }
-    }
+//    private fun compareFaces(sourceImageUrl: String, targetImage: Bitmap) {
+//        lifecycleScope.launch(Dispatchers.IO) {
+//            performCompareFaces(sourceImageUrl, targetImage)
+//        }
+//    }
 
-    private suspend fun performCompareFaces(sourceImageUrl: String, targetImage: Bitmap) {
-        try {
-            // Convert the captured Bitmap to bytes
-            val targetImageBytes = ByteArrayOutputStream()
-            targetImage.compress(Bitmap.CompressFormat.JPEG, 100, targetImageBytes)
-            val targetImageRequest = Image().withBytes(ByteBuffer.wrap(targetImageBytes.toByteArray()))
+//    private suspend fun performCompareFaces(sourceImageUrl: String, targetImage: Bitmap) {
+//        try {
+//            // Convert the captured Bitmap to bytes
+//            val targetImageBytes = ByteArrayOutputStream()
+//            targetImage.compress(Bitmap.CompressFormat.JPEG, 100, targetImageBytes)
+//            val targetImageRequest = Image().withBytes(ByteBuffer.wrap(targetImageBytes.toByteArray()))
+//
+//            val localImageBytes = File(sourceImageUrl).readBytes()
+//            val sourceImageRequest = Image().withBytes(ByteBuffer.wrap(localImageBytes))
+//
+//            // Create CompareFacesRequest
+//            val facesRequest = CompareFacesRequest()
+//                .withSourceImage(sourceImageRequest)
+//                .withTargetImage(targetImageRequest)
+//                .withSimilarityThreshold(70f)
+//
+//            // Perform compareFaces operation
+//            val compareFacesResult = rekognitionClient.compareFaces(facesRequest)
+//
+//            // Handle results on the Main/UI thread
+//            handleCompareFacesResult(compareFacesResult)
+//
+//        } catch (e: Exception) {
+//            e.printStackTrace()
+//            showToastOnMainThread("Error comparing faces")
+//            Log.e("MarkAttendance", "Error comparing faces: ${e.message}")
+//        }
+//    }
 
-            val localImageBytes = File(sourceImageUrl).readBytes()
-            val sourceImageRequest = Image().withBytes(ByteBuffer.wrap(localImageBytes))
-
-            // Create CompareFacesRequest
-            val facesRequest = CompareFacesRequest()
-                .withSourceImage(sourceImageRequest)
-                .withTargetImage(targetImageRequest)
-                .withSimilarityThreshold(70f)
-
-            // Perform compareFaces operation
-            val compareFacesResult = rekognitionClient.compareFaces(facesRequest)
-
-            // Handle results on the Main/UI thread
-            handleCompareFacesResult(compareFacesResult)
-
-        } catch (e: Exception) {
-            e.printStackTrace()
-            showToastOnMainThread("Error comparing faces")
-            Log.e("MarkAttendance", "Error comparing faces: ${e.message}")
-        }
-    }
-
-    private suspend fun handleCompareFacesResult(compareFacesResult: CompareFacesResult) {
-        withContext(Dispatchers.Main) {
-            val faceDetails = compareFacesResult.faceMatches
-            if (faceDetails != null && faceDetails.isNotEmpty()) {
-                val match = faceDetails[0]
-                val similarity = match.similarity
-                if (similarity >= 70f) {
-                    // Faces match, mark attendance
-                    markAttendance(selectedStudent!!)
-                } else {
-                    showToastOnMainThread("Face similarity is too low")
-                }
-            } else {
-                showToastOnMainThread("No matching faces found")
-            }
-        }
-    }
+//    private suspend fun handleCompareFacesResult(compareFacesResult: CompareFacesResult) {
+//        withContext(Dispatchers.Main) {
+//            val faceDetails = compareFacesResult.faceMatches
+//            if (faceDetails != null && faceDetails.isNotEmpty()) {
+//                val match = faceDetails[0]
+//                val similarity = match.similarity
+//                if (similarity >= 70f) {
+//                    // Faces match, mark attendance
+//                    markAttendance(selectedStudent!!)
+//                } else {
+//                    showToastOnMainThread("Face similarity is too low")
+//                }
+//            } else {
+//                showToastOnMainThread("No matching faces found")
+//            }
+//        }
+//    }
 
     private fun markAttendance(student: Student) {
         realm.executeTransactionAsync { realm ->
@@ -225,6 +258,49 @@ class MarkAttandenceActivity : AppCompatActivity(), StudentClickListener {
         scanQrCodeLauncher.launch(null)
 
     }
+    private fun compareFaces1(bitmap1: Bitmap, bitmap2: Bitmap): Boolean {
+        val embedding1 = extractFaceEmbedding(bitmap1)
+        val embedding2 = extractFaceEmbedding(bitmap2)
+
+        // Calculate the distance between two embeddings (Euclidean distance)
+        val distance = calculateEuclideanDistance(embedding1, embedding2)
+        Log.d("Vishal", "compareFaces1: $distance")
+        return distance < 0.65 // Adjust threshold based on your needs
+    }
+    private fun extractFaceEmbedding(bitmap: Bitmap): FloatArray {
+        val inputBuffer = bitmapToByteBuffer(bitmap)
+        val outputBuffer =  Array(1) { FloatArray(192) } // Adjust the size based on your model
+        interpreter.run(inputBuffer, outputBuffer)
+        return outputBuffer[0]
+    }
+    private fun calculateEuclideanDistance(embedding1: FloatArray, embedding2: FloatArray): Float {
+        var sum = 0.0
+        for (i in embedding1.indices) {
+            val diff = embedding1[i] - embedding2[i]
+            sum += diff * diff
+        }
+        return Math.sqrt(sum).toFloat()
+    }
+
+    private fun bitmapToByteBuffer(bitmap: Bitmap): ByteBuffer {
+        val inputSize = 112 // Assuming the input size is 112x112 for MobileFaceNet
+        val byteBuffer = ByteBuffer.allocateDirect(4 * inputSize * inputSize * 3)
+        byteBuffer.order(ByteOrder.nativeOrder())
+
+        val resizedBitmap = Bitmap.createScaledBitmap(bitmap, inputSize, inputSize, true)
+
+        for (i in 0 until inputSize) {
+            for (j in 0 until inputSize) {
+                val pixel = resizedBitmap.getPixel(i, j)
+                byteBuffer.putFloat(((pixel shr 16) and 0xFF) / 255.0f)
+                byteBuffer.putFloat(((pixel shr 8) and 0xFF) / 255.0f)
+                byteBuffer.putFloat((pixel and 0xFF) / 255.0f)
+            }
+        }
+
+        return byteBuffer
+    }
+
     private fun validateQrData(qrData: String?) {
         qrData?.let {
             try {

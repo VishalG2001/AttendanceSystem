@@ -28,6 +28,11 @@
         android:theme="@style/Theme.RecycleViewPractice"
         tools:targetApi="31">
         <activity
+            android:name=".attendanceSystem.FaceComparisonActivity"
+            android:exported="true" >
+
+        </activity>
+        <activity
             android:name=".attendanceSystem.qr_attendance.QrCodeGenerationActivity"
             android:exported="false" />
         <activity
@@ -36,9 +41,7 @@
         <activity
             android:name=".retrofit.RetrofitActivity"
             android:exported="false"
-            android:theme="@style/Theme.RecycleViewPractice">
-
-        </activity>
+            android:theme="@style/Theme.RecycleViewPractice"></activity>
         <activity
             android:name=".bluetoothConnection.BluetoothDevicesActivity"
             android:exported="true" />
@@ -52,7 +55,7 @@
         <activity
             android:name=".attendanceSystem.AttendanceHome"
             android:exported="true"
-            android:theme="@style/Theme.RecycleViewPractice" >
+            android:theme="@style/Theme.RecycleViewPractice">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -77,12 +80,13 @@
             android:exported="false" />
         <activity
             android:name=".MainActivity"
-            android:exported="false" />
+            android:exported="true" >
+
+        </activity>
 
         <meta-data
             android:name="com.google.firebase.ml.vision.DEPENDENCIES"
             android:value="face" />
-
 
         <provider
             android:name="androidx.core.content.FileProvider"

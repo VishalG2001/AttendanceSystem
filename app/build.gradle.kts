@@ -61,7 +61,6 @@ dependencies {
     implementation(libs.play.services.vision)
 
     // face detection
-    implementation( libs.aws.android.sdk.rekognition)
     implementation(libs.kotlinx.coroutines.core.v160)
     //bio
     implementation(libs.androidx.biometric)
@@ -76,5 +75,8 @@ dependencies {
     implementation(libs.quickie.bundled)
     // Face detection offline
     implementation (libs.face.detection)
+    // TensorFlow lite
+    implementation (libs.tensorflow.lite)
+
 
 }
