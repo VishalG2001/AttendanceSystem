@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Rect
 import android.os.Bundle
 import android.provider.MediaStore
 import android.text.InputType
@@ -117,24 +118,38 @@ class RegisterActivity : AppCompatActivity() {
                     Toast.makeText(this, "No face detected in the image", Toast.LENGTH_SHORT).show()
                 } else {
                     // At least one face detected
-                    // Display the image in ImageView
-                    binding.studentImage.setImageBitmap(imageBitmap)
-                    Toast.makeText(this, "Face Detected", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Face detected", Toast.LENGTH_SHORT).show()
 
-                    for (face in faces) {
-                        // Log or process each detected face
-                        val bounds = face.boundingBox
-                        val rotY = face.headEulerAngleY // Head is rotated to the right rotY degrees
-                        val rotZ = face.headEulerAngleZ // Head is tilted sideways rotZ degrees
-                        // You can extract other facial features like landmarks, eyes open/closed, smiling, etc.
-                    }
+                    // Crop the first detected face
+                    val face = faces[0]
+                    val bounds = face.boundingBox
+
+                    // Crop the face from the original image
+                    val croppedFaceBitmap = cropFaceFromBitmap(imageBitmap, bounds)
+
+                    // Display the cropped face in ImageView
+                    binding.studentImage.setImageBitmap(croppedFaceBitmap)
+
+                    // Save the cropped face image to file
+                    saveImageToFile(croppedFaceBitmap)
                 }
             }
             .addOnFailureListener { e ->
                 // Handle detection failure
-                Toast.makeText(this, "Failed to detect faces: ${e.message}", Toast.LENGTH_SHORT)
-                    .show()
+                Toast.makeText(this, "Failed to detect faces: ${e.message}", Toast.LENGTH_SHORT).show()
             }
+    }
+
+    // Function to crop the face from the original bitmap
+    private fun cropFaceFromBitmap(sourceBitmap: Bitmap, faceBounds: Rect): Bitmap {
+        // Ensure the face bounds are within the bitmap dimensions
+        val left = faceBounds.left.coerceAtLeast(0)
+        val top = faceBounds.top.coerceAtLeast(0)
+        val right = faceBounds.right.coerceAtMost(sourceBitmap.width)
+        val bottom = faceBounds.bottom.coerceAtMost(sourceBitmap.height)
+
+        // Crop the face region from the original bitmap
+        return Bitmap.createBitmap(sourceBitmap, left, top, right - left, bottom - top)
     }
 
 
@@ -143,9 +158,7 @@ class RegisterActivity : AppCompatActivity() {
         val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
         val storageDir = getExternalFilesDir(null)
         val imageFile = File.createTempFile(
-            "JPEG_${timeStamp}_",
-            ".jpg",
-            storageDir
+            "JPEG_${timeStamp}_", ".jpg", storageDir
         )
         currentPhotoPath = imageFile.absolutePath
         val currentPhoto = imageFile
@@ -181,11 +194,6 @@ class RegisterActivity : AppCompatActivity() {
             student.phoneNo = phoneNo
             student.userImg = currentPhotoPath.toString()
 
-            // Optional: Save image as byte array if needed
-//            imageBitmap?.let {
-//                val byteArray = bitmapToByteArray(it)
-//                student.userImg = byteArray
-//            }
         }, {
             // Transaction was successful, navigate to Attendance Home activity
             Toast.makeText(this@RegisterActivity, "Successfully registered", Toast.LENGTH_SHORT)
@@ -196,9 +204,7 @@ class RegisterActivity : AppCompatActivity() {
         }, { error ->
             // Transaction failed, show error message
             Toast.makeText(
-                this@RegisterActivity,
-                "Failed to save data: ${error.message}",
-                Toast.LENGTH_SHORT
+                this@RegisterActivity, "Failed to save data: ${error.message}", Toast.LENGTH_SHORT
             ).show()
             Log.e("register", "Failed to save data: ${error.message}")
             realm.close()
@@ -235,8 +241,7 @@ class RegisterActivity : AppCompatActivity() {
     private fun checkCameraPermission() {
         when {
             ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.CAMERA
+                this, Manifest.permission.CAMERA
             ) == PackageManager.PERMISSION_GRANTED -> {
                 launchCamera()
             }
@@ -251,11 +256,13 @@ class RegisterActivity : AppCompatActivity() {
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         takePictureLauncher.launch(intent)
     }
+
     private fun launchGallery() {
         val intent = Intent(Intent.ACTION_PICK)
         intent.type = "image/*"
         pickImageLauncher.launch(intent)
     }
+
     private val pickImageLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
@@ -275,6 +282,4 @@ class RegisterActivity : AppCompatActivity() {
             }
         }
     }
-
-
 }
