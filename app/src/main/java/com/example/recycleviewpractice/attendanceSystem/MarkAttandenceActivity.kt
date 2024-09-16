@@ -268,7 +268,7 @@ private fun loadModel(): Interpreter {
         // Calculate the distance between two embeddings (Euclidean distance)
         val distance = calculateEuclideanDistance(embedding1, embedding2)
         Log.d("Vishal", "compareFaces1: $distance")
-        return distance < 0.6 // Adjust threshold based on your needs
+        return distance < 0.7 // Adjust threshold based on your needs
     }
     private fun extractFaceEmbedding(bitmap: Bitmap): FloatArray {
         val inputBuffer = bitmapToByteBuffer(bitmap)

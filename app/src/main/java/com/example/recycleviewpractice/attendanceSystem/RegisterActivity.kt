@@ -12,6 +12,7 @@ import android.text.InputType
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.example.recycleviewpractice.R
@@ -41,7 +42,19 @@ class RegisterActivity : AppCompatActivity() {
         binding = ActivityRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setUpView()
-        binding.captureImageButton.setOnClickListener { checkCameraPermission() }
+        binding.captureImageButton.setOnClickListener {
+            // Show dialog to choose between Camera and Gallery
+            val options = arrayOf("Camera", "Gallery")
+            val builder = AlertDialog.Builder(this)
+            builder.setTitle("Select Image Source")
+            builder.setItems(options) { dialog, which ->
+                when (which) {
+                    0 -> checkCameraPermission() // Open Camera
+                    1 -> launchGallery() // Open Gallery
+                }
+            }
+            builder.show()
+        }
         binding.registerButton.setOnClickListener { saveToRealmAndNavigate() }
     }
 
@@ -59,6 +72,7 @@ class RegisterActivity : AppCompatActivity() {
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
+
             val imageBitmap = result.data?.extras?.get("data") as Bitmap?
             imageBitmap?.let {
                 // Display the captured image in ImageView
@@ -237,4 +251,30 @@ class RegisterActivity : AppCompatActivity() {
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         takePictureLauncher.launch(intent)
     }
+    private fun launchGallery() {
+        val intent = Intent(Intent.ACTION_PICK)
+        intent.type = "image/*"
+        pickImageLauncher.launch(intent)
+    }
+    private val pickImageLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val selectedImageUri = result.data?.data
+            selectedImageUri?.let {
+                // Load the image from the URI and handle it
+                val inputStream = contentResolver.openInputStream(it)
+                val imageBitmap = BitmapFactory.decodeStream(inputStream)
+                imageBitmap?.let {
+                    // Display the selected image in ImageView
+                    imageBitmapUser = it
+                    binding.studentImage.setImageBitmap(it)
+                    saveImageToFile(it)
+                    detectFacesInImage(currentPhotoPath)
+                }
+            }
+        }
+    }
+
+
 }
